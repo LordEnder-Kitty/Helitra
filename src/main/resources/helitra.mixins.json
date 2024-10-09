@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.enderkitty.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ElytraEntityModelMixin",
+    "ElytraSoundInstanceMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+	}
+}

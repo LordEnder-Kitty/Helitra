@@ -1,0 +1,12 @@
+{
+  "text.helitra.helicopter.enabled": "Helitra helicopter enabled",
+  "text.helitra.helicopter.disabled": "Helitra helicopter disabled",
+  "text.helitra.sounds.enabled": "Helitra sounds enabled",
+  "text.helitra.sounds.disabled": "Helitra sounds disabled",
+  "text.helitra.refreshConfig": "Reloaded config",
+  "config.helitra.title": "Helitra Config",
+  "config.helitra.option.helicopter": "Helicopter",
+  "config.helitra.option.sounds": "Sounds",
+  "config.helitra.footer.refreshConfig": "Refresh Config",
+  "config.helitra.mute.tooltip": "Mute the helicopter noises. (Disabled in singleplayer due to audio bugs)"
+}
