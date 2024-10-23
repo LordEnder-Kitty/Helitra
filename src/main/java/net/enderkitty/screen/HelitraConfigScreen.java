@@ -3,6 +3,7 @@ package net.enderkitty.screen;
 import net.enderkitty.Helitra;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.Screen;
@@ -12,13 +13,15 @@ import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.sound.AbstractSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.TickableSoundInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
@@ -45,7 +48,7 @@ public class HelitraConfigScreen extends Screen {
             Identifier.of(Helitra.MOD_ID, "widget/muted_highlighted")
     );
     private final HelitraConfigSoundInstance SOUND_INSTANCE = new HelitraConfigSoundInstance(
-            Helitra.ITEM_ELYTRA_HELICOPTER.getId(), SoundCategory.MASTER, 1, 1, SoundInstance.createRandom(),
+            Helitra.ITEM_ELYTRA_HELICOPTER.id(), SoundCategory.MASTER, 1, 1, SoundInstance.createRandom(),
             SoundInstance.AttenuationType.NONE, 0.0, 0.0, 0.0, true);
     private final @Nullable Screen parent;
     private int rotationTick = 0;
@@ -117,8 +120,8 @@ public class HelitraConfigScreen extends Screen {
     
     @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.drawGuiTexture(DOGGO_BACKGROUND, 0, 0, this.width, this.height);
-        this.applyBlur(delta);
+        context.drawGuiTexture(RenderLayer::getGuiTextured, DOGGO_BACKGROUND, 0, 0, this.width, this.height);
+        this.applyBlur();
         this.renderDarkening(context);
     }
     
@@ -149,9 +152,18 @@ public class HelitraConfigScreen extends Screen {
                     DiffuseLighting.disableGuiDepthLighting();
                 }
                 
-                this.client
-                        .getItemRenderer()
-                        .renderItem(stack, ModelTransformationMode.GUI, false, context.getMatrices(), context.getVertexConsumers(), 15728880, OverlayTexture.DEFAULT_UV, bakedModel);
+                if (stack.isIn(ItemTags.BUNDLES)) {
+                    this.client
+                            .getItemRenderer()
+                            .renderBundle(
+                                    stack, ModelTransformationMode.GUI, false, context.getMatrices(), MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers(), 15728880, OverlayTexture.DEFAULT_UV, bakedModel, this.client.world, this.client.player, 0
+                            );
+                } else {
+                    this.client
+                            .getItemRenderer()
+                            .renderItem(stack, ModelTransformationMode.GUI, false, context.getMatrices(), MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers(), 15728880, OverlayTexture.DEFAULT_UV, bakedModel);
+                }
+                
                 context.draw();
                 if (bl) {
                     DiffuseLighting.enableGuiDepthLighting();

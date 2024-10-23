@@ -30,19 +30,19 @@ public class Helitra implements ClientModInitializer {
         Helitra.loadConfig();
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("helicopter").executes(context -> {
             HELICOPTER_ENABLED = !HELICOPTER_ENABLED;
-            if (HELICOPTER_ENABLED) context.getSource().getPlayer().sendMessage(Text.translatable("text.helitra.helicopter.enabled"));
-            if (!HELICOPTER_ENABLED) context.getSource().getPlayer().sendMessage(Text.translatable("text.helitra.helicopter.disabled"));
+            if (HELICOPTER_ENABLED) context.getSource().getPlayer().sendMessage(Text.translatable("text.helitra.helicopter.enabled"), false);
+            if (!HELICOPTER_ENABLED) context.getSource().getPlayer().sendMessage(Text.translatable("text.helitra.helicopter.disabled"), false);
             Helitra.saveConfig(HELICOPTER_ENABLED, SOUNDS_ENABLED);
             return 1;
         }).then(ClientCommandManager.literal("helicopter").executes(context -> {
             SOUNDS_ENABLED = !SOUNDS_ENABLED;
-            if (SOUNDS_ENABLED) context.getSource().getPlayer().sendMessage(Text.translatable("text.helitra.sounds.enabled"));
-            if (!SOUNDS_ENABLED) context.getSource().getPlayer().sendMessage(Text.translatable("text.helitra.sounds.disabled"));
+            if (SOUNDS_ENABLED) context.getSource().getPlayer().sendMessage(Text.translatable("text.helitra.sounds.enabled"), false);
+            if (!SOUNDS_ENABLED) context.getSource().getPlayer().sendMessage(Text.translatable("text.helitra.sounds.disabled"), false);
             Helitra.saveConfig(HELICOPTER_ENABLED, SOUNDS_ENABLED);
             return 1;
         }).then(ClientCommandManager.literal("helicopter").executes(context -> {
             Helitra.loadConfig();
-            context.getSource().getPlayer().sendMessage(Text.translatable("text.helitra.refreshConfig"));
+            context.getSource().getPlayer().sendMessage(Text.translatable("text.helitra.refreshConfig"), false);
             return 1;
         })))));
 	}

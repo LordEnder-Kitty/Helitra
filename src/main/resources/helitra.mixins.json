@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "ElytraEntityModelMixin",
+    "ElytraEntityModelMixin$ElytraEntityModelMixinTwo",
     "ElytraSoundInstanceMixin"
   ],
   "injectors": {

@@ -24,7 +24,7 @@ public class HelicopterSoundInstance extends MovingSoundInstance {
     @Override
     public void tick() {
         this.tickCount++;
-        if (!this.player.isRemoved() && (this.tickCount <= 20 || this.player.isFallFlying())) {
+        if (!this.player.isRemoved() && (this.tickCount <= 20 || this.player.isGliding())) {
             this.x = (float)this.player.getX();
             this.y = (float)this.player.getY();
             this.z = (float)this.player.getZ();
