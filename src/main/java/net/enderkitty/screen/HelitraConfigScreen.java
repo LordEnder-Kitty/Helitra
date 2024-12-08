@@ -3,7 +3,6 @@ package net.enderkitty.screen;
 import net.enderkitty.Helitra;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.Screen;
@@ -14,14 +13,13 @@ import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.sound.AbstractSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.TickableSoundInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ModelTransformationMode;
-import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
@@ -114,8 +112,8 @@ public class HelitraConfigScreen extends Screen {
         context.drawCenteredTextWithShadow(this.textRenderer, TITLE, this.width / 2, 10, 0xFFFFFFFF);
         context.drawBorder(this.width / 2 - 70, this.height / 2 - 32, 140, 64, 0xFFFFFFFF);
         
-        this.drawItem(context, new ItemStack(Items.ELYTRA), this.width / 4, this.height / 2, 80, rotationTick);
-        this.drawItem(context, new ItemStack(Items.ELYTRA), (this.width / 4) * 3, this.height / 2, 80, rotationTick);
+        this.drawItem(context, new ItemStack(Items.ELYTRA), this.width / 4, this.height / 2, (float) this.height / 6, rotationTick);
+        this.drawItem(context, new ItemStack(Items.ELYTRA), (this.width / 4) * 3, this.height / 2, (float) this.height / 6, rotationTick);
     }
     
     @Override
@@ -139,37 +137,29 @@ public class HelitraConfigScreen extends Screen {
     }
     
     private void drawItem(DrawContext context, ItemStack stack, int x, int y, float scale, float rotate) {
+        ItemRenderState itemRenderState = new ItemRenderState();
+        
         if (!stack.isEmpty() && this.client != null) {
-            BakedModel bakedModel = this.client.getItemRenderer().getModel(stack, this.client.world, this.client.player, 0);
+            this.client.getItemModelManager().update(itemRenderState, stack, ModelTransformationMode.GUI, false, null, null, 0);
             context.getMatrices().push();
             context.getMatrices().translate((float)(x + 8), (float)(y + 8), (float)(150));
             context.getMatrices().multiply(new Quaternionf().rotateZ(rotate));
             
             try {
                 context.getMatrices().scale(scale, -scale, scale);
-                boolean bl = !bakedModel.isSideLit();
+                boolean bl = !itemRenderState.isSideLit();
                 if (bl) {
+                    context.draw();
                     DiffuseLighting.disableGuiDepthLighting();
                 }
                 
-                if (stack.isIn(ItemTags.BUNDLES)) {
-                    this.client
-                            .getItemRenderer()
-                            .renderBundle(
-                                    stack, ModelTransformationMode.GUI, false, context.getMatrices(), MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers(), 15728880, OverlayTexture.DEFAULT_UV, bakedModel, this.client.world, this.client.player, 0
-                            );
-                } else {
-                    this.client
-                            .getItemRenderer()
-                            .renderItem(stack, ModelTransformationMode.GUI, false, context.getMatrices(), MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers(), 15728880, OverlayTexture.DEFAULT_UV, bakedModel);
-                }
-                
+                itemRenderState.render(context.getMatrices(), this.client.getBufferBuilders().getEntityVertexConsumers(), 15728880, OverlayTexture.DEFAULT_UV);
                 context.draw();
                 if (bl) {
                     DiffuseLighting.enableGuiDepthLighting();
                 }
-            } catch (Throwable var12) {
-                CrashReport crashReport = CrashReport.create(var12, "Rendering item");
+            } catch (Throwable var11) {
+                CrashReport crashReport = CrashReport.create(var11, "Rendering item");
                 CrashReportSection crashReportSection = crashReport.addElement("Item being rendered");
                 crashReportSection.add("Item Type", () -> String.valueOf(stack.getItem()));
                 crashReportSection.add("Item Components", () -> String.valueOf(stack.getComponents()));
