@@ -17,9 +17,9 @@ import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.sound.AbstractSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.TickableSoundInstance;
+import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
@@ -140,7 +140,7 @@ public class HelitraConfigScreen extends Screen {
         ItemRenderState itemRenderState = new ItemRenderState();
         
         if (!stack.isEmpty() && this.client != null) {
-            this.client.getItemModelManager().update(itemRenderState, stack, ModelTransformationMode.GUI, false, null, null, 0);
+            this.client.getItemModelManager().update(itemRenderState, stack, ItemDisplayContext.GUI, null, null, 0);
             context.getMatrices().push();
             context.getMatrices().translate((float)(x + 8), (float)(y + 8), (float)(150));
             context.getMatrices().multiply(new Quaternionf().rotateZ(rotate));

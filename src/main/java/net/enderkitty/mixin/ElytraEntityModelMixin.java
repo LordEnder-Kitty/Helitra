@@ -31,20 +31,17 @@ public class ElytraEntityModelMixin {
         if (Helitra.HELICOPTER_ENABLED) {
             float l = (float) (-Math.PI / 12);
             if (this.entity.isGliding()) {
-                float tickDelta = MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false);
-                l = MathHelper.abs((float) (-Math.PI * 2.0 / 9.0) - this.entity.limbAnimator.getSpeed(tickDelta) * this.entity.limbAnimator.getPos(tickDelta));
+                float tickDelta = MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false);
+                l = MathHelper.abs((float) (-Math.PI * 2.0 / 9.0) - this.entity.limbAnimator.getSpeed() * this.entity.limbAnimator.getAnimationProgress(tickDelta));
             } else if (this.entity.isInSneakingPose()) {
                 l = (float) (-Math.PI / 4);
             }
             
             this.leftWingRoll = this.leftWingRoll + (l - this.leftWingRoll) * 0.1f;
-            
-
         } else {
             this.leftWingRoll = value;
             
         }
-        
     }
     
     @Mixin(ElytraEntityModel.class)
@@ -68,14 +65,14 @@ public class ElytraEntityModelMixin {
             if (Helitra.HELICOPTER_ENABLED) {
                 AbstractClientPlayerEntity player = MinecraftClient.getInstance().player;
                 if (player != null && player.isGliding()) {
-                    this.leftWing.pivotX = 0;
+                    this.leftWing.originX = 0;
                 } else {
-                    this.leftWing.pivotX = 5.0f;
+                    this.leftWing.originX = 5.0f;
                 }
             } else {
-                this.leftWing.pivotX = 5.0f;
+                this.leftWing.originX = 5.0f;
             }
-            this.rightWing.pivotX = -this.leftWing.pivotX;
+            this.rightWing.originX = -this.leftWing.originX;
         }
     }
 }
